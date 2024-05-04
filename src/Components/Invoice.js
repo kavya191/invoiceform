@@ -1,61 +1,252 @@
-import React, { useState } from 'react'
-import '../Components/Invoice.css'
-import Invoiceform from './Invoiceform'
+import React, { useState } from "react";
+import "../Components/Invoice.css";
+import Invoiceform from "./Invoiceform";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
+import FormLabel from "react-bootstrap/FormLabel";
+import Label from "react-bootstrap/FormLabel";
+import { Col, Row } from "react-bootstrap";
+
 const Invoice = () => {
-    const [showModal,setShowModal]=useState(false)
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const [invoiceData, setInvoiceData] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalTax, setTotalTax] = useState(0);
+  const [grandTotal, setGrandTotal] = useState(0);
+  const [inputs, setInputs] = useState({
+    itemId: "",
+    customerName: "",
+    itemName: "",
+    price: "",
+    tax: "",
+    totalprice: "",
+  });
+
+  const getInputs = (e) => {
+    const { name, value } = e.target;
+    console.log(name, value);
+    setInputs({ ...inputs, [name]: value });
+  };
+  const handleSave = () => {
+    const newData = {
+      itemId: inputs.itemId,
+      customerName: inputs.customerName,
+      itemName: inputs.itemName,
+      price: parseFloat(inputs.price),
+      tax: parseFloat(inputs.tax),
+      totalprice: parseFloat(inputs.price) + parseFloat(inputs.tax),
+    };
+
+    const updatedInvoiceData = [...invoiceData, newData];
+    setInvoiceData(updatedInvoiceData);
+
+    // Calculate new totals
+    let newTotalPrice = 0;
+    let newTotalTax = 0;
+
+    updatedInvoiceData.forEach((item) => {
+      newTotalPrice += item.price;
+      newTotalTax += item.tax;
+    });
+
+    setTotalPrice(newTotalPrice);
+    setTotalTax(newTotalTax);
+    setGrandTotal(newTotalPrice + newTotalTax);
+
+    // Clear input fields after saving
+    setInputs({
+      itemId: "",
+      customerName: "",
+      itemName: "",
+      price: "",
+      tax: "",
+      totalprice: "",
+    });
+
+    handleClose();
+}
+ 
   return (
-    <div div className='invoice_outer'>
-      <div className='invoice_inner'>
-        <div className='invoice_header container'>
-            <div className=' invoice '>
-                <p>INVOICE</p>
-            </div>
-            <div className=' invoice_search '>
-                <button className='invoice_create' onClick={()=>setShowModal(true)}>Create {showModal &&<Invoiceform onClose={()=>setShowModal(false)} />} </button>
-                
-                <input className='input_search' type="text" />
-                <button className='search_btn'>Search</button>
-            </div>
-            <table className="table">
-  <thead >
-    <tr className='invoice_thead'>
-      <th scope="col " className='invoice_thead'>Invoice No</th>
-      <th scope="col" className='invoice_thead'>Date</th>
-      <th scope="col" className='invoice_thead'>Customer Name</th>
-      <th scope="col" className='invoice_thead'>Total</th>
-      <th scope="col" className='invoice_thead'>Tax</th>
-      <th scope="col" className='invoice_thead'> Grand Total</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr className='invoice_thead'>
-      <th scope="row" >1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-      <td>Mark</td>
-      <td>Otto</td>
-     
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
-    </tr>
-  </tbody>
-</table>
+    <div div className="invoice_outer">
+      <div className="invoice_inner">
+        <div className="invoice_header container">
+          <div className=" invoice ">
+            <p>INVOICE</p>
+          </div>
+          <div className=" invoice_search ">
+            <button className="invoice_create" onClick={handleShow}>
+              CREATE
+            </button>
+            <Modal show={show} onHide={handleClose} className="create_invoice">
+              <Modal.Header className="form_header">
+                <Modal.Title>Create Invoice</Modal.Title>
+              </Modal.Header>
+              <Modal.Header className="invoice_date">
+                <FormLabel>Invoice No</FormLabel>
+                <button className="invoice_btn">1001</button>
+                <FormLabel>Date</FormLabel>
+                <button className="date_btn">5-05-2024</button>
+                <div>
+                  <button className="add_btn">ADD</button>
+                </div>
+              </Modal.Header>
+
+              <Modal.Body className="form_body">
+                <table className="table">
+                  <thead>
+                    <tr className="invoice_thead">
+                      <th scope="col " className="invoice_thead">
+                        Item ID
+                      </th>
+                      <th scope="col" className="invoice_thead">
+                        Customer Name
+                      </th>
+                      <th scope="col" className="invoice_thead">
+                        Item Name
+                      </th>
+                      <th scope="col" className="invoice_thead">
+                        Price
+                      </th>
+                      <th scope="col" className="invoice_thead">
+                        Tax
+                      </th>
+                      <th scope="col" className="invoice_thead">
+                        Sub Total
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="invoice_thead">
+                      <td scope="row">
+                        {" "}
+                        <Form.Control
+                          name="itemId"
+                          onChange={(e) => getInputs(e)}
+                          placeholder="Item ID"
+                        />
+                      </td>
+                      <td>
+                        {" "}
+                        <Form.Control
+                          name="customerName"
+                          onChange={(e) => getInputs(e)}
+                          placeholder="Customer Name"
+                        />
+                      </td>
+                      <td>
+                        {" "}
+                        <Form.Control
+                          name="itemName"
+                          onChange={(e) => getInputs(e)}
+                          placeholder="Item Name"
+                        />
+                      </td>
+                      <td>
+                        {" "}
+                        <Form.Control
+                          name="price"
+                          onChange={(e) => getInputs(e)}
+                          placeholder="Price"
+                        />
+                      </td>
+                      <td>
+                        {" "}
+                        <Form.Control
+                          name="tax"
+                          onChange={(e) => getInputs(e)}
+                          placeholder="Tax"
+                        />
+                      </td>
+                      <td>
+                        <Form.Control
+                          name="totalprice"
+                          onChange={(e) => getInputs(e)}
+                          placeholder="Total Price"
+                          value={0}
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <Form className="invoice_addform">
+                  <Row>
+                    <Col>Total Price</Col>
+                    <Col>
+                      <Form.Control placeholder="Total Price" value={totalPrice} />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>Total Tax</Col>
+                    <Col>
+                      <Form.Control placeholder="Total Tax" value={totalTax} />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col> Grand Total </Col>
+                    <Col>
+                      <Form.Control placeholder="Grand Total" value={grandTotal} />
+                    </Col>
+                  </Row>
+                </Form>
+                <button className="save_btn" onClick={handleSave}>
+                  Save
+                </button>
+              </Modal.Body>
+            </Modal>
+
+            <input className="input_search" type="text" />
+            <button className="search_btn">Search</button>
+          </div>
+          <table className="table">
+            <thead>
+              <tr className="invoice_thead">
+                <th scope="col " className="invoice_thead">
+                  Invoice No
+                </th>
+                <th scope="col" className="invoice_thead">
+                  Date
+                </th>
+                <th scope="col" className="invoice_thead">
+                  Customer Name
+                </th>
+                <th scope="col" className="invoice_thead">
+                  Item Name
+                </th>
+                <th scope="col" className="invoice_thead">
+                  Total
+                </th>
+                <th scope="col" className="invoice_thead">
+                  Tax
+                </th>
+                <th scope="col" className="invoice_thead">
+                  {" "}
+                  Grand Total
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+            {invoiceData.map((data, index) => (
+                <tr key={index}>
+                  <td>{data.itemId}</td>
+                  <td>5-05-2024</td>
+                  <td>{data.customerName}</td>
+                  <td>{data.itemName}</td>
+                  <td>{data.price}</td>
+                  <td>{data.tax}</td>
+                  <td>{data.totalprice}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-        
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Invoice
+export default Invoice;
