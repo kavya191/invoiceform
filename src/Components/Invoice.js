@@ -4,7 +4,6 @@ import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import FormLabel from "react-bootstrap/FormLabel";
 import { Col, Row } from "react-bootstrap";
-import '../Components/Invoiceform'
 
 const Invoice = () => {
   const [show, setShow] = useState(false);
@@ -94,10 +93,10 @@ const Invoice = () => {
             <p>INVOICE</p>
           </div>
           <div className=" invoice_search ">
-            <button className="invoice_create" onClick={handleShow} >
+            <button className="invoice_create" onClick={handleShow}>
               CREATE
             </button>
-            {/* <Invoiceform onHide={()=>setShow(false)}/>  */}
+
             {/* popup invoice form */}
             <Modal show={show} onHide={handleClose} className="create_invoice">
               <Modal.Header className="form_header">
@@ -132,9 +131,9 @@ const Invoice = () => {
                       <th scope="col" className="invoice_thead">
                         Tax
                       </th>
-                      <th scope="col" className="invoice_thead">
+                      {/* <th scope="col" className="invoice_thead">
                         Sub Total
-                      </th>
+                      </th> */}
                     </tr>
                   </thead>
                   <tbody className="invoice_table">
@@ -179,13 +178,13 @@ const Invoice = () => {
                           placeholder="Tax"
                         />
                       </td>
-                      <td>
+                      {/* <td>
                         <Form.Control
                           name="totalprice"
                           onChange={(e) => getInputs(e)}
                           placeholder="Total Price"
                         />
-                      </td>
+                      </td> */}
                     </tr>
                   </tbody>
                 </table>
@@ -193,7 +192,7 @@ const Invoice = () => {
                   <Row>
                     <Col>Total Price</Col>
                     <Col>
-                      <Form.Control
+                      <Form.Control 
                         placeholder="Total Price"
                         value={totalPrice}
                       />
@@ -232,7 +231,7 @@ const Invoice = () => {
           {/* Invoice List */}
           <table className="table">
             <thead>
-              <tr className="invoice_thead">
+              <tr className="invoice_row">
                 <th scope="col " className="invoice_thead">
                   Invoice No
                 </th>
