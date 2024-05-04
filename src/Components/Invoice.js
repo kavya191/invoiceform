@@ -1,23 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Components/Invoice.css";
-import Invoiceform from "./Invoiceform";
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import FormLabel from "react-bootstrap/FormLabel";
-import Label from "react-bootstrap/FormLabel";
 import { Col, Row } from "react-bootstrap";
+import '../Components/Invoiceform'
 
 const Invoice = () => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const [currentDate, setCurrentDate] = useState("");
   const [invoiceData, setInvoiceData] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalTax, setTotalTax] = useState(0);
   const [grandTotal, setGrandTotal] = useState(0);
+
   const [inputs, setInputs] = useState({
     itemId: "",
     customerName: "",
@@ -69,8 +68,24 @@ const Invoice = () => {
     });
 
     handleClose();
-}
- 
+  };
+  //search item
+  const handleSearch = (e) => {
+    const { value } = e.target;
+    const filteredData = invoiceData.filter((item) =>
+      item.itemName.toLowerCase().includes(value.toLowerCase())
+    );
+    setInvoiceData(filteredData);
+  };
+  //Current Date
+  useEffect(() => {
+    const date = new Date();
+    const formattedDate = `${date.getDate()}-${
+      date.getMonth() + 1
+    }-${date.getFullYear()}`;
+    setCurrentDate(formattedDate);
+  }, []);
+
   return (
     <div div className="invoice_outer">
       <div className="invoice_inner">
@@ -79,9 +94,11 @@ const Invoice = () => {
             <p>INVOICE</p>
           </div>
           <div className=" invoice_search ">
-            <button className="invoice_create" onClick={handleShow}>
+            <button className="invoice_create" onClick={handleShow} >
               CREATE
             </button>
+            {/* <Invoiceform onHide={()=>setShow(false)}/>  */}
+            {/* popup invoice form */}
             <Modal show={show} onHide={handleClose} className="create_invoice">
               <Modal.Header className="form_header">
                 <Modal.Title>Create Invoice</Modal.Title>
@@ -90,15 +107,15 @@ const Invoice = () => {
                 <FormLabel>Invoice No</FormLabel>
                 <button className="invoice_btn">1001</button>
                 <FormLabel>Date</FormLabel>
-                <button className="date_btn">5-05-2024</button>
+                <button className="date_btn">{currentDate}</button>
                 <div>
                   <button className="add_btn">ADD</button>
                 </div>
               </Modal.Header>
 
               <Modal.Body className="form_body">
-                <table className="table">
-                  <thead>
+                <table className="table ">
+                  <thead className="invoice_table">
                     <tr className="invoice_thead">
                       <th scope="col " className="invoice_thead">
                         Item ID
@@ -120,7 +137,7 @@ const Invoice = () => {
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="invoice_table">
                     <tr className="invoice_thead">
                       <td scope="row">
                         {" "}
@@ -167,7 +184,6 @@ const Invoice = () => {
                           name="totalprice"
                           onChange={(e) => getInputs(e)}
                           placeholder="Total Price"
-                          value={0}
                         />
                       </td>
                     </tr>
@@ -177,7 +193,10 @@ const Invoice = () => {
                   <Row>
                     <Col>Total Price</Col>
                     <Col>
-                      <Form.Control placeholder="Total Price" value={totalPrice} />
+                      <Form.Control
+                        placeholder="Total Price"
+                        value={totalPrice}
+                      />
                     </Col>
                   </Row>
                   <Row>
@@ -189,7 +208,10 @@ const Invoice = () => {
                   <Row>
                     <Col> Grand Total </Col>
                     <Col>
-                      <Form.Control placeholder="Grand Total" value={grandTotal} />
+                      <Form.Control
+                        placeholder="Grand Total"
+                        value={grandTotal}
+                      />
                     </Col>
                   </Row>
                 </Form>
@@ -198,10 +220,16 @@ const Invoice = () => {
                 </button>
               </Modal.Body>
             </Modal>
-
-            <input className="input_search" type="text" />
+            {/* Search item */}
+            <input
+              className="input_search"
+              type="text"
+              placeholder="Search by Item Name"
+              onChange={handleSearch}
+            />
             <button className="search_btn">Search</button>
           </div>
+          {/* Invoice List */}
           <table className="table">
             <thead>
               <tr className="invoice_thead">
@@ -230,10 +258,10 @@ const Invoice = () => {
               </tr>
             </thead>
             <tbody>
-            {invoiceData.map((data, index) => (
+              {invoiceData.map((data, index) => (
                 <tr key={index}>
                   <td>{data.itemId}</td>
-                  <td>5-05-2024</td>
+                  <td>{currentDate}</td>
                   <td>{data.customerName}</td>
                   <td>{data.itemName}</td>
                   <td>{data.price}</td>
