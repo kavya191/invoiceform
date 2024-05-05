@@ -72,7 +72,7 @@ const Invoice = () => {
   const handleSearch = (e) => {
     const { value } = e.target;
     const filteredData = invoiceData.filter((item) =>
-      item.itemName.toLowerCase().includes(value.toLowerCase())
+      item.customerName.toLowerCase().includes(value.toLowerCase())
     );
     setInvoiceData(filteredData);
   };
@@ -131,9 +131,7 @@ const Invoice = () => {
                       <th scope="col" className="invoice_thead">
                         Tax
                       </th>
-                      {/* <th scope="col" className="invoice_thead">
-                        Sub Total
-                      </th> */}
+                     
                     </tr>
                   </thead>
                   <tbody className="invoice_table">
@@ -178,13 +176,7 @@ const Invoice = () => {
                           placeholder="Tax"
                         />
                       </td>
-                      {/* <td>
-                        <Form.Control
-                          name="totalprice"
-                          onChange={(e) => getInputs(e)}
-                          placeholder="Total Price"
-                        />
-                      </td> */}
+                    
                     </tr>
                   </tbody>
                 </table>
@@ -241,9 +233,7 @@ const Invoice = () => {
                 <th scope="col" className="invoice_thead">
                   Customer Name
                 </th>
-                <th scope="col" className="invoice_thead">
-                  Item Name
-                </th>
+                
                 <th scope="col" className="invoice_thead">
                   Total
                 </th>
@@ -262,7 +252,7 @@ const Invoice = () => {
                   <td>{data.itemId}</td>
                   <td>{currentDate}</td>
                   <td>{data.customerName}</td>
-                  <td>{data.itemName}</td>
+                 
                   <td>{data.price}</td>
                   <td>{data.tax}</td>
                   <td>{data.totalprice}</td>
